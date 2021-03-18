@@ -1,6 +1,7 @@
 {
   "name": "js-to-fhirpath",
   "version": "1.0.0",
+  "type": "module",
   "description": "js to fhirpath syntax converter",
   "main": "index.js",
   "scripts": {
@@ -11,9 +12,12 @@
     "url": "js-to-fhirpath"
   },
   "author": "Aaron Sun",
-  "license": "ISC",
+  "license": "SEE LICENSE IN LICENSE.md",
   "devDependencies": {
     "chai": "^4.3.4",
     "mocha": "^8.3.2"
+  },
+  "directories": {
+    "test": "test"
   }
 }
