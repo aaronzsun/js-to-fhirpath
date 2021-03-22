@@ -1,9 +1,11 @@
 /**
  * Full fhirconvert function: validates, converts, then identifies variables.
+ * @param {string} str - inputted normal syntax expression
+ * @param {Array} vars - array of usable variables entered by user
  * @returns converted fhirpath expression
  */
-export function fhirconvert(str, vars, funs) {
-    if (validate(str, vars, funs)){
+export function fhirconvert(str, vars) {
+    if (validate(str, vars)){
         return varfind(convert(str), vars);
     }
     else {
@@ -15,49 +17,47 @@ export function fhirconvert(str, vars, funs) {
  * Verifies normal syntax by confirming var names, function names,
 * and number of parenthesis.
 * @param {string} str - inputted normal syntax expression
+* @param {Array} vars - array of usable variables
 * @returns boolean, valid or invalid
 */
-export function validate(str, vars, funs) {
-var lcount = 0;
-var rcount = 0;
-var len = str.length;
-var func = "";
-for (var i=0; i<len; i++) {
-    if (str[i] == "(") {
-        lcount += 1;
-    }
-    if (str[i] == ")") {
-        rcount += 1;
-    }
-
-    if (((/[a-z]/).test(str[i]))) {
-        if (!(/[a-zA-Z]/).test(str[i+1]) || !(/[a-zA-Z]/).test(str[i-1])) {
-            if(!vars.includes(str[i])) {
+export function validate(str, vars) {
+    let funs = ["CEILING", "FLOOR", "ABS", "TRUNCATE", "EXP", "SQRT", "LN", "LOG",
+                "ceiling", "floor", "abs", "truncate", "exp", "sqrt", "ln", "log"];
+    var lcount = 0;
+    var rcount = 0;
+    var len = str.length;
+    var substr = "";
+    for (var i=0; i<len; i++) {
+        if (str[i] == "(") {
+            lcount += 1;
+        }
+        if (str[i] == ")") {
+            rcount += 1;
+        }
+        if ((/[a-zA-Z]/).test(str[i])) {
+            substr = substr + str[i];
+        }
+        if (str[i+1] == null || !(/[a-zA-Z]/).test(str[i+1]))
+        {
+            if ((funs.includes(substr) || vars.includes(substr)) || substr == "") {
+                substr = "";
+            }
+            else {
                 return false;
             }
-        }
+        }            
     }
-    if ((/[A-Z]/).test(str[i])) {
-        func = func + str[i];
-    }
-    else {
-        if (funs.includes(func) || func == "") {
-            func = "";
-        }
-        else {
-            return false;
-        }
-    }
+    return (lcount == rcount);
 }
-return (lcount == rcount);
-}
-    
+
 /**
  * Identifies convertable functions in expression and converts them recursively.
  * @param {string} str - inputted normal syntax expression
  * @returns expression with converted functions
  */
 export function convert(str) {
+    let funs = ["CEILING", "FLOOR", "ABS", "TRUNCATE", "EXP", "SQRT", "LN", 
+                "ceiling", "floor", "abs", "truncate", "exp", "sqrt", "ln"];
     var count = 0;
     if (str.includes("^")) {
         var i = str.indexOf("^");
@@ -66,37 +66,23 @@ export function convert(str) {
         str = str.slice(0, i-base.length) + "(" + base + ".power(" + power + ")" + ")" + str.slice(i+power.length+1);
         count += 1;
     }
-    if (str.includes("CEILING")) {
-        str = funcappend(str, "CEILING");
-        count += 1;
-    }
-    if (str.includes("FLOOR")) {
-        str = funcappend(str, "FLOOR");
-        count += 1;
-    }
-    if (str.includes("ABS")) {
-        str = funcappend(str, "ABS");
-        count += 1;
-    }
-    if (str.includes("SQRT")) {
-        str = funcappend(str, "SQRT");
-        count += 1;
-    }
-    if (str.includes("TRUNCATE")) {
-        str = funcappend(str, "TRUNCATE");
-        count += 1;
-    }
-    if (str.includes("EXP")) {
-        str = funcappend(str, "EXP");
-        count += 1;
-    }
-    if (str.includes("LN")) {
-        str = funcappend(str, "LN");
-        count += 1;
+    for (let f=0; f<funs.length; f++){
+        if (str.includes(funs[f])) {
+            if (str[str.indexOf(funs[f])-1] != "."){
+                str = funcappend(str, funs[f]);
+                count +=1;
+            }
+        }
     }
     if (str.includes("LOG")) {
-        str = logappend(str);
+        str = logappend(str, "LOG");
         count += 1;
+    }
+    if (str.includes("log")) {
+        if (str[str.indexOf("log")-1] != ".") {
+            str = logappend(str, "log");
+        count += 1;
+        }
     }
     if (count != 0) {
         return convert(str);
@@ -140,10 +126,11 @@ export function funcappend(str, func){
 /**
  * Same as funcappend, but in LOG format
  * @param {string} str - inputted normal syntax expression
+ * @param {string} func - "LOG" or "log"
  * @returns expression with converted log function
  */
-    export function logappend(str){
-    var i = str.indexOf("LOG");
+export function logappend(str, func){
+    var i = str.indexOf(func);
     var j = i + 3;
     var k = j;
     var cma = -1;
@@ -253,22 +240,31 @@ export function rfind(str, i) {
 /**
  * Identifies variables in expression and adds %
  * @param {string} str - converted expression
+ * @param {Array} vars - array of usable variables
  * @returns converted expression with formatted variables
  */
 export function varfind(str, vars) {
     var end = false;
     var i = 0;
+    var j = 0;
+    var v = "";
     while(!end) {
-        if (vars.includes(str[i])) {
-            if (!((/[a-zA-Z]/).test(str[i+1]) || (/[a-zA-Z]/).test(str[i-1])) || ((str[i+1] == null) || str[i-1] == null)) {
-                str = str.slice(0, i) + "%" + str[i] + str.slice(i+1);
-                i += 1;               
-            }
-        }
-        i += 1;
         if (str[i] == null) {
             end = true;
+        } else {
+            if ((/[a-zA-Z]/).test(str[i])) {
+                v = v + str[i];
+            } else {
+                j = i - v.length;
+                if (vars.includes(v)) {
+                    str = str.slice(0, j) + "%" + str.slice(j);
+                    i += 1;
+                }
+                v = "";
+            }
+            i += 1;
         }
     }
+    
     return str;
 }
