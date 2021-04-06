@@ -37,6 +37,8 @@ export function validate(str, vars) {
     "sqrt",
     "ln",
     "log",
+    "and",
+    "or"
   ];
   var lcount = 0;
   var rcount = 0;
@@ -319,6 +321,13 @@ export function varfind(str, vars) {
           i += 1;
         }
         v = "";
+      }
+      if (str[i+1] == null) {
+        j = i - v.length + 1;
+        if (vars.includes(v)) {
+          str = str.slice(0, j) + "%" + str.slice(j);
+          i += 1;
+        }
       }
       i += 1;
     }

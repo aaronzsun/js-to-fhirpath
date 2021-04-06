@@ -3,6 +3,7 @@ import chai from "chai";
 let expect = chai.expect;
 
 let vars = ["a", "b", "c", "d", "e"];
+let vars2 = ["Patient", "HeartRate", "Age"];
 
 describe("#fhirconvert()", function () {
   context("Exponent", function () {
@@ -126,7 +127,28 @@ describe("#fhirconvert()", function () {
     // in progress
   context("Operators", function () {
     it("and", function () {
-      expect(fhir.fhirconvert("a and b", vars)).to.equal(null);
+      expect(fhir.fhirconvert("a and b", vars)).to.equal("%a and %b");
+    });
+    it("and 2", function () {
+      expect(fhir.fhirconvert("(a < 3) and b", vars)).to.equal("(%a < 3) and %b");
+    });
+    it("or", function () {
+      expect(fhir.fhirconvert("a or b", vars)).to.equal("%a or %b");
+    });
+    it("equals", function () {
+      expect(fhir.fhirconvert("a = b", vars)).to.equal("%a = %b");
+    });
+    it("not equals", function () {
+      expect(fhir.fhirconvert("a != b", vars)).to.equal("%a != %b");
+    });
+  });
+
+  context("Variables 2", function () {
+    it("String vars", function () {
+      expect(fhir.fhirconvert("Patient + Age", vars2)).to.equal("%Patient + %Age");
+    });
+    it("String vars 2", function () {
+      expect(fhir.fhirconvert("Patient^Age", vars2)).to.equal("%Patient.power(%Age)");
     });
   });
 });
