@@ -42,8 +42,9 @@ OUTPUT: "2+2"
 INPUT: fhirconvert("(a+b)^3", [a, b, c, d])
 OUTPUT: "((%a+%b).power(3))"
 
-INPUT: fhirconvert("2+2", [a, b, c, d])
-OUTPUT: "(17.log(2)).ceiling()"
+INPUT: fhirconvert("CEILING(LOG(2, 17))", [a, b, c, d])
+OUTPUT: "((17.log(2)).ceiling())"
 
-INPUT: fhirconvert("2+2", [a, b, c, d])
+INPUT: fhirconvert("TRUNCATE(ABS(-3.3))+SQRT(LN(a+b+c))", [a, b, c, d])
 OUTPUT: "((-3.3).abs()).truncate()+((%a+%b+%c).ln()).sqrt()"
+s

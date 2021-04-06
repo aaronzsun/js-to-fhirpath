@@ -37,7 +37,6 @@ export function validate(str, vars) {
     "sqrt",
     "ln",
     "log",
-    "and"
   ];
   var lcount = 0;
   var rcount = 0;
@@ -100,6 +99,21 @@ export function convert(str) {
       ")" +
       ")" +
       str.slice(i + power.length + 1);
+    count += 1;
+  }
+  if (str.includes("**")) {
+    var i = str.indexOf("**");
+    var base = lfind(str, i);
+    var power = rfind(str, i+1);
+    str =
+      str.slice(0, i - base.length) +
+      "(" +
+      base +
+      ".power(" +
+      power +
+      ")" +
+      ")" +
+      str.slice(i + power.length + 2);
     count += 1;
   }
   for (let f = 0; f < funs.length; f++) {

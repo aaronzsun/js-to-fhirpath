@@ -29,6 +29,9 @@ describe("#fhirconvert()", function () {
     it("Negative", function () {
       expect(fhir.fhirconvert("-a^-3.3", vars)).to.equal("(-%a.power(-3.3))");
     });
+    it("**", function () {
+      expect(fhir.fhirconvert("a**b", vars)).to.equal("(%a.power(%b))");
+    });
   });
 
   context("Functions", function () {
@@ -120,6 +123,7 @@ describe("#fhirconvert()", function () {
     });
   });
 
+    // in progress
   context("Operators", function () {
     it("and", function () {
       expect(fhir.fhirconvert("a and b", vars)).to.equal(null);
