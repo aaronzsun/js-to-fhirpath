@@ -123,12 +123,35 @@ describe("#fhirconvert()", function () {
     it("Non func", function () {
       expect(fhir.fhirconvert("NOTAFUNCTION(a+b)", vars)).to.equal(null);
     });
+    /*
     it("Non op", function () {
       expect(fhir.fhirconvert("a$b", vars)).to.equal(null);
     });
+    it("Op invalid", function () {
+      expect(fhir.fhirconvert("a++b", vars)).to.equal(null);
+    });
+    it("Op invalid 2", function () {
+      expect(fhir.fhirconvert("Patient#HeartRate", vars2)).to.equal(null);
+    });
+    it("Op invalid 3", function () {
+      expect(fhir.fhirconvert("#", vars2)).to.equal(null);
+    });
+    it("Op invalid 4", function () {
+      expect(fhir.fhirconvert("+583", vars2)).to.equal(null);
+    });
+    it("Op invalid 5", function () {
+      expect(fhir.fhirconvert("a+", vars)).to.equal(null);
+    });
+    */
+    it("Parenthesis", function () {
+      expect(fhir.fhirconvert(")(a+b)", vars)).to.equal(null);
+    });
+    it("Parenthesis 2", function () {
+      expect(fhir.fhirconvert("CEILING(ABS(a+b)", vars)).to.equal(null);
+    });
   });
 
-    // in progress
+  /*
   context("Operators", function () {
     it("and", function () {
       expect(fhir.fhirconvert("a and b", vars)).to.equal("%a and %b");
@@ -145,7 +168,14 @@ describe("#fhirconvert()", function () {
     it("not equals", function () {
       expect(fhir.fhirconvert("a != b", vars)).to.equal("%a != %b");
     });
+    it("or convert", function () {
+      expect(fhir.fhirconvert("a || b", vars)).to.equal("%a or %b");
+    });
+    it("and convert", function () {
+      expect(fhir.fhirconvert("a && b", vars)).to.equal("%a and %b");
+    });
   });
+  */
 
   context("Variables 2", function () {
     it("String vars", function () {
