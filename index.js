@@ -17,74 +17,9 @@
  * syntax, and number of parenthesis.
  * @param {string} str - inputted normal syntax expression
  * @param {Array} vars - array of usable variables
- * @returns boolean, valid or invalidh
+ * @returns boolean, valid or invalid
  */
 export function validate(str, vars) {
-/*
-  let ops = [
-    "+",
-    "-",
-    "*",
-    "/",
-    "^",
-    "**",
-    "||",
-    "&&",
-    "<",
-    ">",
-    "=",
-    "!=",
-    "=="
-  ];
-  */
-  var len = str.length;
-  /*
-  var op = "";
-  for (var j = 0; j < len; j++) {
-    if (!(/[a-z]|[A-Z]|[0-9]|[.]|[-]|[(]|[)]|[\s]|[,]/.test(str[j]))) {
-      op = op + str[j];
-      if (j == len - 1 || j == 0) {
-        return false;
-      }
-    }
-    else if (op.length > 0) {
-      if (!(ops.includes(op))) {
-        return false;
-      }
-      var lsearch = true;
-      var op_l = j - op.length - 1;
-      while(lsearch) {
-        if (!(/[\s]/.test(str[op_l]))) {
-          if (!(/[a-z]|[A-Z]|[0-9]|[.]|[-]|[)]|[,]/.test(str[op_l]))) {
-            return false;
-          }
-          lsearch = false;
-        } else {
-          op_l -= 1;
-        }
-      }
-      var rsearch = true;
-      var op_r = j;
-      if (op_r > len - 1) {
-        return false;
-      }
-      while(rsearch) {
-        if (!(/[\s]/.test(str[op_r]))) {
-          if (!(/[a-z]|[A-Z]|[0-9]|[.]|[-]|[(]|[,]/.test(str[op_r]))) {
-            return false;
-          }
-          rsearch = false;
-        } else {
-          op_r += 1;
-        }
-      }
-      op = "";
-    }
-    else {
-      op = "";
-    }
-  }
-  */
   let funs = [
     "CEILING",
     "FLOOR",
@@ -102,12 +37,6 @@ export function validate(str, vars) {
     "sqrt",
     "ln",
     "log",
-    /*
-    "and",
-    "or",
-    "AND",
-    "OR"
-    */
   ];
   var lcount = 0;
   var rcount = 0;
@@ -203,24 +132,6 @@ export function convert(str) {
       count += 1;
     }
   }
-  /*
-  if (str.includes("OR")) {
-    str = str.replace("OR", "or");
-    count += 1;
-  }
-  if (str.includes("AND")) {
-    str = str.replace("AND", "and");
-    count += 1;
-  }
-  if (str.includes("||")) {
-    str = str.replace("||", "or");
-    count += 1;
-  }
-  if (str.includes("&&")) {
-    str = str.replace("&&", "and");
-    count += 1;
-  }
-  */
   if (count != 0) {
     return convert(str);
   } else {
