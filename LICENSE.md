@@ -39,4 +39,4 @@ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 
-Also see the <a href="./DISCLAIMER.md"> disclaimer and public domain notice. </a>
+Also see the [disclaimer and public domain notice.](DISCLAIMER.md)

@@ -10,12 +10,13 @@ functions.
 In addition to passing in the expression, an array of usable variables must
 also be passed as a parameter.
 
-USABLE OPERATORS: +, -, *, /, ^
+USABLE OPERATORS: +, -, *, /, ^, **
 USABLE FUNCTIONS: 
 CEILING(), FLOOR(), ABS(), LOG(), TRUNCATE(), EXP(), SQRT(), LN()
     -Usage: CEILING([expression]), FLOOR([expression])
 LOG()
     -Usage: LOG([Base], [Value])
+USABLE VARIABLES: Any string of letters and numbers differing from the aforementioned functions.
 
 EXAMPLE EXPRESSIONS:
 2+2

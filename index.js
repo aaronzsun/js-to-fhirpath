@@ -37,12 +37,9 @@ export function validate(str, vars) {
     "sqrt",
     "ln",
     "log",
-    "and",
-    "or"
   ];
   var lcount = 0;
   var rcount = 0;
-  var len = str.length;
   var substr = "";
   for (var i = 0; i < len; i++) {
     if (str[i] == "(") {
@@ -51,7 +48,7 @@ export function validate(str, vars) {
     if (str[i] == ")") {
       rcount += 1;
     }
-    if (/[a-zA-Z]/.test(str[i])) {
+    if (/[a-z]|[A-Z]/.test(str[i])) {
       substr = substr + str[i];
     }
     if (str[i + 1] == null || !/[a-zA-Z]/.test(str[i + 1])) {
@@ -94,11 +91,9 @@ export function convert(str) {
     var power = rfind(str, i);
     str =
       str.slice(0, i - base.length) +
-      "(" +
       base +
       ".power(" +
       power +
-      ")" +
       ")" +
       str.slice(i + power.length + 1);
     count += 1;
@@ -109,11 +104,9 @@ export function convert(str) {
     var power = rfind(str, i+1);
     str =
       str.slice(0, i - base.length) +
-      "(" +
       base +
       ".power(" +
       power +
-      ")" +
       ")" +
       str.slice(i + power.length + 2);
     count += 1;
@@ -171,13 +164,11 @@ export function funcappend(str, func) {
     }
   }
   return (
-    "(" +
     str.slice(0, i).trim() +
     str.slice(j, k + 1).trim() +
     "." +
     func.toLowerCase() +
     "()" +
-    ")" +
     str.slice(k + 1).trim()
   );
 }
@@ -217,7 +208,9 @@ export function logappend(str, func) {
 
   return (
     str.slice(0, i).trim() +
+    "(" +
     str.slice(cma + 1, k).trim() +
+    ")" +
     ".log(" +
     str.slice(j + 1, cma).trim() +
     ")" +
@@ -236,10 +229,10 @@ export function lfind(str, i) {
     var search = true;
     var lstr = "";
     while (search) {
-      if (str[i - 2] == undefined) {
+      if (i < 2) {
         search = false;
       }
-      if (/[a-z]|[0-9]|[.]|[-]/.test(str[i - 1])) {
+      if (/[a-z]|[A-Z]|[0-9]|[.]|[-]/.test(str[i - 1])) {
         lstr = str[i - 1] + lstr;
         i -= 1;
       } else {
@@ -284,7 +277,7 @@ export function rfind(str, i) {
       if (str[i + 2] == undefined) {
         search = false;
       }
-      if (/[a-z]|[0-9]|[.]|[-]/.test(str[i + 1])) {
+      if (/[a-z]|[A-Z]|[0-9]|[.]|[-]/.test(str[i + 1])) {
         rstr = rstr + str[i + 1];
         i += 1;
       } else {
@@ -312,7 +305,7 @@ export function varfind(str, vars) {
     if (str[i] == null) {
       end = true;
     } else {
-      if (/[a-zA-Z]/.test(str[i])) {
+      if (/[a-z]|[A-Z]|[0-9]/.test(str[i])) {
         v = v + str[i];
       } else {
         j = i - v.length;
