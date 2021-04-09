@@ -20,6 +20,7 @@
  * @returns boolean, valid or invalid
  */
 export function validate(str, vars) {
+  var len = str.length;
   let funs = [
     "CEILING",
     "FLOOR",
@@ -36,7 +37,7 @@ export function validate(str, vars) {
     "exp",
     "sqrt",
     "ln",
-    "log",
+    "log"
   ];
   var lcount = 0;
   var rcount = 0;
