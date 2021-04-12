@@ -24,15 +24,10 @@ describe("#fhirconvert()", function () {
       expect(fhir.fhirconvert("3.3^4.2", vars)).to.equal("3.3.power(4.2)");
     });
     it("Parenthesis", function () {
-      expect(fhir.fhirconvert("(a+b)^(3+4)", vars)).to.equal(
-        "(%a+%b).power((3+4))"
-      );
+      expect(fhir.fhirconvert("(a+b)^(3+4)", vars)).to.equal("(%a+%b).power((3+4))");
     });
     it("Negative", function () {
       expect(fhir.fhirconvert("-a^-3.3", vars)).to.equal("-%a.power(-3.3)");
-    });
-    it("**", function () {
-      expect(fhir.fhirconvert("a**b", vars)).to.equal("%a.power(%b)");
     });
   });
 
@@ -123,72 +118,8 @@ describe("#fhirconvert()", function () {
     it("Non func", function () {
       expect(fhir.fhirconvert("NOTAFUNCTION(a+b)", vars)).to.equal(null);
     });
-    /*
     it("Non op", function () {
       expect(fhir.fhirconvert("a$b", vars)).to.equal(null);
-    });
-    it("Op invalid", function () {
-      expect(fhir.fhirconvert("a++b", vars)).to.equal(null);
-    });
-    it("Op invalid 2", function () {
-      expect(fhir.fhirconvert("Patient#HeartRate", vars2)).to.equal(null);
-    });
-    it("Op invalid 3", function () {
-      expect(fhir.fhirconvert("#", vars2)).to.equal(null);
-    });
-    it("Op invalid 4", function () {
-      expect(fhir.fhirconvert("+583", vars2)).to.equal(null);
-    });
-    it("Op invalid 5", function () {
-      expect(fhir.fhirconvert("a+", vars)).to.equal(null);
-    });
-    */
-    it("Parenthesis", function () {
-      expect(fhir.fhirconvert(")(a+b)", vars)).to.equal(null);
-    });
-    it("Parenthesis 2", function () {
-      expect(fhir.fhirconvert("CEILING(ABS(a+b)", vars)).to.equal(null);
-    });
-  });
-
-  /*
-  context("Operators", function () {
-    it("and", function () {
-      expect(fhir.fhirconvert("a and b", vars)).to.equal("%a and %b");
-    });
-    it("and 2", function () {
-      expect(fhir.fhirconvert("(a < 3) and b", vars)).to.equal("(%a < 3) and %b");
-    });
-    it("or", function () {
-      expect(fhir.fhirconvert("a or b", vars)).to.equal("%a or %b");
-    });
-    it("equals", function () {
-      expect(fhir.fhirconvert("a = b", vars)).to.equal("%a = %b");
-    });
-    it("not equals", function () {
-      expect(fhir.fhirconvert("a != b", vars)).to.equal("%a != %b");
-    });
-    it("or convert", function () {
-      expect(fhir.fhirconvert("a || b", vars)).to.equal("%a or %b");
-    });
-    it("and convert", function () {
-      expect(fhir.fhirconvert("a && b", vars)).to.equal("%a and %b");
-    });
-  });
-  */
-
-  context("Variables 2", function () {
-    it("String vars", function () {
-      expect(fhir.fhirconvert("Patient + Age", vars2)).to.equal("%Patient + %Age");
-    });
-    it("String vars 2", function () {
-      expect(fhir.fhirconvert("Patient^Age", vars2)).to.equal("%Patient.power(%Age)");
-    });
-    it("String vars 3", function () {
-      expect(fhir.fhirconvert("Patient**Age", vars2)).to.equal("%Patient.power(%Age)");
-    });
-    it("String vars 4", function () {
-      expect(fhir.fhirconvert("ABS(FLOOR(Patient^(Age+HeartRate)))", vars2)).to.equal("((%Patient.power((%Age+%HeartRate))).floor()).abs()");
     });
   });
 });
