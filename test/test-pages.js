@@ -118,8 +118,5 @@ describe("#fhirconvert()", function () {
     it("Non func", function () {
       expect(fhir.fhirconvert("NOTAFUNCTION(a+b)", vars)).to.equal(null);
     });
-    it("Non op", function () {
-      expect(fhir.fhirconvert("a$b", vars)).to.equal(null);
-    });
   });
 });

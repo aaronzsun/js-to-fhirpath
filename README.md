@@ -48,4 +48,3 @@ OUTPUT: "((17.log(2)).ceiling())"
 
 INPUT: fhirconvert("TRUNCATE(ABS(-3.3))+SQRT(LN(a+b+c))", [a, b, c, d])
 OUTPUT: "((-3.3).abs()).truncate()+((%a+%b+%c).ln()).sqrt()"
-s
