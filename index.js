@@ -6,7 +6,7 @@
  */
  export function fhirconvert(str, vars) {
   if (validate(str, vars)) {
-    return varfind(convert(str.trim()), vars);
+    return varfind(convert(str), vars);
   } else {
     return null;
   }
@@ -20,7 +20,77 @@
  * @returns boolean, valid or invalid
  */
 export function validate(str, vars) {
+  let ops = [
+    "+",
+    "-",
+    "*",
+    "/",
+    "^",
+    "**",
+    "||",
+    "&&",
+    "<",
+    ">",
+    "=",
+    "!=",
+    "!~",
+    ">=",
+    "<=",
+    "xor",
+    "XOR",
+    "implies",
+    "IMPLIES",
+    "and",
+    "or",
+    "AND",
+    "OR"
+  ];
   var len = str.length;
+  var op = "";
+  for (var j = 0; j < len; j++) {
+    if (!(/[a-z]|[A-Z]|[0-9]|[.]|[-]|[(]|[)]|[\s]|[,]/.test(str[j]))) {
+      op = op + str[j];
+      if (j == len - 1 || j == 0) {
+        return false;
+      }
+    }
+    else if (op.length > 0) {
+      if (!(ops.includes(op))) {
+        return false;
+      }
+      var lsearch = true;
+      var op_l = j - op.length - 1;
+      while(lsearch) {
+        if (!(/[\s]/.test(str[op_l]))) {
+          if (!(/[a-z]|[A-Z]|[0-9]|[.]|[-]|[)]|[,]/.test(str[op_l]))) {
+            return false;
+          }
+          lsearch = false;
+        } else {
+          op_l -= 1;
+        }
+      }
+      var rsearch = true;
+      var op_r = j;
+      if (op_r > len - 1) {
+        return false;
+      }
+      while(rsearch) {
+        if (!(/[\s]/.test(str[op_r]))) {
+          if (!(/[a-z]|[A-Z]|[0-9]|[.]|[-]|[(]|[,]/.test(str[op_r]))) {
+            return false;
+          }
+          rsearch = false;
+        } else {
+          op_r += 1;
+        }
+      }
+      op = "";
+    }
+    else {
+      op = "";
+    }
+  }
   let funs = [
     "CEILING",
     "FLOOR",
@@ -37,7 +107,9 @@ export function validate(str, vars) {
     "exp",
     "sqrt",
     "ln",
-    "log"
+    "log",
+    "NOT",
+    "not",
   ];
   var lcount = 0;
   var rcount = 0;
@@ -52,11 +124,13 @@ export function validate(str, vars) {
     if (rcount > lcount) {
       return false;
     }
-    if (/[a-z]|[A-Z]/.test(str[i])) {
+    if (/[a-z]|[A-Z]|[0-9]/.test(str[i])) {
       substr = substr + str[i];
     }
-    if (str[i + 1] == null || !/[a-zA-Z]/.test(str[i + 1])) {
-      if (funs.includes(substr) || vars.includes(substr) || substr == "") {
+    if ((str[i + 1] == null || !(/[[a-z]|[A-Z]|[0-9]/.test(str[i + 1])))) {
+      if ((funs.includes(substr) && str[i + 1] == "(") || substr == "") {
+        substr = "";
+      } else if (vars.includes(substr) || (ops.includes(substr) || !(isNaN(substr)))) {
         substr = "";
       } else {
         return false;
@@ -80,13 +154,15 @@ export function convert(str) {
     "EXP",
     "SQRT",
     "LN",
+    "NOT",
     "ceiling",
     "floor",
     "abs",
     "truncate",
     "exp",
     "sqrt",
-    "ln"
+    "ln",
+    "not"
   ];
   var count = 0;
   if (str.includes("^")) {
@@ -95,9 +171,9 @@ export function convert(str) {
     var power = rfind(str, i);
     str =
       str.slice(0, i - base.length) +
-      base +
+      base.trim() +
       ".power(" +
-      power +
+      power.trim() +
       ")" +
       str.slice(i + power.length + 1);
     count += 1;
@@ -108,9 +184,9 @@ export function convert(str) {
     var power = rfind(str, i+1);
     str =
       str.slice(0, i - base.length) +
-      base +
+      base.trim() +
       ".power(" +
-      power +
+      power.trim() +
       ")" +
       str.slice(i + power.length + 2);
     count += 1;
@@ -132,6 +208,22 @@ export function convert(str) {
       str = logappend(str, "log");
       count += 1;
     }
+  }
+  if (str.includes("OR")) {
+    str = str.replace("OR", "or");
+    count += 1;
+  }
+  if (str.includes("AND")) {
+    str = str.replace("AND", "and");
+    count += 1;
+  }
+  if (str.includes("||")) {
+    str = str.replace("||", "or");
+    count += 1;
+  }
+  if (str.includes("&&")) {
+    str = str.replace("&&", "and");
+    count += 1;
   }
   if (count != 0) {
     return convert(str);
@@ -236,7 +328,7 @@ export function lfind(str, i) {
       if (i < 2) {
         search = false;
       }
-      if (/[a-z]|[A-Z]|[0-9]|[.]|[-]/.test(str[i - 1])) {
+      if (/[a-z]|[A-Z]|[0-9]|[.]|[-]|[\s]/.test(str[i - 1])) {
         lstr = str[i - 1] + lstr;
         i -= 1;
       } else {
@@ -281,7 +373,7 @@ export function rfind(str, i) {
       if (str[i + 2] == undefined) {
         search = false;
       }
-      if (/[a-z]|[A-Z]|[0-9]|[.]|[-]/.test(str[i + 1])) {
+      if (/[a-z]|[A-Z]|[0-9]|[.]|[-]|[\s]|[(]|[)]/.test(str[i + 1])) {
         rstr = rstr + str[i + 1];
         i += 1;
       } else {
@@ -329,6 +421,5 @@ export function varfind(str, vars) {
       i += 1;
     }
   }
-
   return str;
 }
