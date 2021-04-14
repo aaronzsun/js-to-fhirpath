@@ -12,6 +12,33 @@
   }
 }
 
+// Array of usable operators
+let ops = [
+  "+",
+  "-",
+  "*",
+  "/",
+  "^",
+  "**",
+  "||",
+  "&&",
+  "<",
+  ">",
+  "=",
+  "!=",
+  "!~",
+  ">=",
+  "<=",
+  "xor",
+  "XOR",
+  "implies",
+  "IMPLIES",
+  "and",
+  "or",
+  "AND",
+  "OR"
+];
+
 /**
  * Verifies normal syntax by confirming var names, function names,
  * syntax, and number of parenthesis.
@@ -20,49 +47,29 @@
  * @returns boolean, valid or invalid
  */
 export function validate(str, vars) {
-  let ops = [
-    "+",
-    "-",
-    "*",
-    "/",
-    "^",
-    "**",
-    "||",
-    "&&",
-    "<",
-    ">",
-    "=",
-    "!=",
-    "!~",
-    ">=",
-    "<=",
-    "xor",
-    "XOR",
-    "implies",
-    "IMPLIES",
-    "and",
-    "or",
-    "AND",
-    "OR"
-  ];
+  // Operator Validation
   var len = str.length;
   var op = "";
+  // Loop to identify operator strings
   for (var j = 0; j < len; j++) {
-    if (!(/[a-z]|[A-Z]|[0-9]|[.]|[-]|[(]|[)]|[\s]|[,]/.test(str[j]))) {
+    // If operator char, append to op
+    if (!(/[a-zA-Z]|[0-9]|[.]|[-]|[(]|[)]|[\s]|[,]/.test(str[j]))) {
       op = op + str[j];
       if (j == len - 1 || j == 0) {
         return false;
       }
     }
+    // Checks operator if length > 1 and operator string ends
     else if (op.length > 0) {
       if (!(ops.includes(op))) {
         return false;
       }
+      // Validates expression to left of operator
       var lsearch = true;
       var op_l = j - op.length - 1;
       while(lsearch) {
         if (!(/[\s]/.test(str[op_l]))) {
-          if (!(/[a-z]|[A-Z]|[0-9]|[.]|[-]|[)]|[,]/.test(str[op_l]))) {
+          if (!(/[a-zA-Z]|[0-9]|[.]|[-]|[)]|[,]/.test(str[op_l]))) {
             return false;
           }
           lsearch = false;
@@ -70,6 +77,7 @@ export function validate(str, vars) {
           op_l -= 1;
         }
       }
+      // Validates expression to right of operator
       var rsearch = true;
       var op_r = j;
       if (op_r > len - 1) {
@@ -77,7 +85,7 @@ export function validate(str, vars) {
       }
       while(rsearch) {
         if (!(/[\s]/.test(str[op_r]))) {
-          if (!(/[a-z]|[A-Z]|[0-9]|[.]|[-]|[(]|[,]/.test(str[op_r]))) {
+          if (!(/[a-zA-Z]|[0-9]|[.]|[-]|[(]|[,]/.test(str[op_r]))) {
             return false;
           }
           rsearch = false;
@@ -91,6 +99,8 @@ export function validate(str, vars) {
       op = "";
     }
   }
+
+  // Function validation
   let funs = [
     "CEILING",
     "FLOOR",
@@ -114,6 +124,7 @@ export function validate(str, vars) {
   var lcount = 0;
   var rcount = 0;
   var substr = "";
+  // Loop to checks parenthesis and identify non-operator strings
   for (var i = 0; i < len; i++) {
     if (str[i] == "(") {
       lcount += 1;
@@ -124,10 +135,12 @@ export function validate(str, vars) {
     if (rcount > lcount) {
       return false;
     }
-    if (/[a-z]|[A-Z]|[0-9]/.test(str[i])) {
+    // If usable char, add to substring
+    if (/[a-zA-Z]|[0-9]/.test(str[i])) {
       substr = substr + str[i];
     }
-    if ((str[i + 1] == null || !(/[[a-z]|[A-Z]|[0-9]/.test(str[i + 1])))) {
+    // Checks if substring is valid
+    if ((str[i + 1] == null || !(/[[a-zA-Z0-9]/.test(str[i + 1])))) {
       if ((funs.includes(substr) && str[i + 1] == "(") || substr == "") {
         substr = "";
       } else if (vars.includes(substr) || (ops.includes(substr) || !(isNaN(substr)))) {
@@ -328,7 +341,7 @@ export function lfind(str, i) {
       if (i < 2) {
         search = false;
       }
-      if (/[a-z]|[A-Z]|[0-9]|[.]|[-]|[\s]/.test(str[i - 1])) {
+      if (/[a-zA-Z]|[0-9]|[.]|[-]|[\s]/.test(str[i - 1])) {
         lstr = str[i - 1] + lstr;
         i -= 1;
       } else {
@@ -373,7 +386,7 @@ export function rfind(str, i) {
       if (str[i + 2] == undefined) {
         search = false;
       }
-      if (/[a-z]|[A-Z]|[0-9]|[.]|[-]|[\s]|[(]|[)]/.test(str[i + 1])) {
+      if (/[a-zA-Z]|[0-9]|[.]|[-]|[\s]|[(]|[)]/.test(str[i + 1])) {
         rstr = rstr + str[i + 1];
         i += 1;
       } else {
@@ -401,7 +414,7 @@ export function varfind(str, vars) {
     if (str[i] == null) {
       end = true;
     } else {
-      if (/[a-z]|[A-Z]|[0-9]/.test(str[i])) {
+      if (/[a-zA-Z]|[0-9]/.test(str[i])) {
         v = v + str[i];
       } else {
         j = i - v.length;
