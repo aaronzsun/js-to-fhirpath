@@ -61,7 +61,7 @@ let funs = [
   "not",
 ];
 
-// Array of functions in the form x.func() 
+// Array of functions with no arguments
 let funs2 = [
   "CEILING",
   "FLOOR",
