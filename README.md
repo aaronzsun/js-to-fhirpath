@@ -44,10 +44,10 @@ functions. The syntax guide is bellow.
 
 ***USABLE FUNCTIONS:***
 CEILING(), FLOOR(), ABS(), LOG(), TRUNCATE(), EXP(), SQRT(), LN(), NOT()  
-    -Usage: CEILING([expression]), FLOOR([expression]), etc.
+* Usage: CEILING([expression]), FLOOR([expression]), etc.
 
 LOG()  
-    -Usage: LOG([Base], [Value])
+* Usage: LOG([Base], [Value])
     
 ***USABLE VARIABLES:***
 Any string of letters and numbers differing from the aforementioned functions.
