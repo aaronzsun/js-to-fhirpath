@@ -43,10 +43,10 @@ functions. The syntax guide is bellow.
 ***USABLE OPERATORS:*** +, -, *, /, ^, **, !=, !~, >=, <=, =, &&, ||, xor, and, or, implies
 
 ***USABLE FUNCTIONS:***
-CEILING(), FLOOR(), ABS(), LOG(), TRUNCATE(), EXP(), SQRT(), LN(), NOT()
+CEILING(), FLOOR(), ABS(), LOG(), TRUNCATE(), EXP(), SQRT(), LN(), NOT()  
     -Usage: CEILING([expression]), FLOOR([expression]), etc.
 
-LOG()
+LOG()  
     -Usage: LOG([Base], [Value])
     
 ***USABLE VARIABLES:***
