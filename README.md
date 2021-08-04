@@ -21,6 +21,7 @@ npm test
 import mathtofhirpath
 mathtofhirpath.fhirconvert("(a+b)^2", [a, b]); // returns ($a+$b).power(2)
 mathtofhirpath.fhirconvert("CEILING(a*b)", [a, b]); // returns ($a*$b).ceiling()
+mathtofhirpath.fhirconvert("TRUNCATE(ABS(-3.3))+SQRT(LN(a+b+c))", [a, b, c, d]) // returns ((-3.3).abs()).truncate()+((%a+%b+%c).ln()).sqrt()
 ```
 
 ***fhirconvert*** is the main function of math-to-fhirpath, which validates and converts an
